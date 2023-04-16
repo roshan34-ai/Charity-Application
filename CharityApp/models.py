@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import hashlib
 
 # Create your models here.
 
@@ -32,10 +33,9 @@ class UserModel(AbstractUser):
         blank=True
     )
     password = models.CharField(
-        max_length=15
+        max_length=255
     )
-    is_varified = models.CharField(
-        max_length=20, 
+    is_varified = models.BooleanField(
         default=False
     )
     
@@ -86,24 +86,36 @@ class Block_Of_Transactions(models.Model):
         blank=True
     )
     hash = models.CharField(
-        max_length=10,
+        max_length=255,
         null=True,
         blank=True
     )
     prev_hash = models.CharField(
-        max_length=10,
+        max_length=255,
         null=True,
         blank=True
     )
     
     def __str__(self) -> str:
-        return self.donor
+        return self.user_id.username
     
 
-    def create_hash(donor):
-        data = UserModel.objects.get(id = donor)
-        pass
+    def create_hash(self, obj=None):
+        transactions_data = {
+                            "transaction_id":obj.id,
+                            "user_id":obj.user_id,
+                            "donation_for":obj.donation_for,
+                            "amount_paid":obj.amount_paid,
+                            "from_account":obj.from_account,
+                            "to_account":obj.to_account,
+                            "Adhar_number":obj.Adhar_number,
+                            "PAN_Number":obj.PAN_Number
+                        }
+        hash = hashlib.sha256(str(transactions_data).encode('utf-8')).hexdigest
+        return hash()
 
-    def get_prev_hash():
-        pass
+    def get_prev_hash(self, obj=None):
+        transaction_data = Block_Of_Transactions.objects.filter(id = int(obj.id)-1).first()
+        print("transaction_data----------------", transaction_data)
+        return transaction_data.hash
    

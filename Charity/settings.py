@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-#14^f4kseg6(k&7ge#&*k*bq6op2a!i08a-7eefc2j%53#cb07
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'CharityApp',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +130,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST="smtp.gmail.com"
 EMAIL_PORT=587
-EMAIL_HOST_USER="tissatechteam@gmail.com"
-EMAIL_HOST_PASSWORD="aeapncuamdcpzdwj"
+EMAIL_HOST_USER="roshanshendre24@gmail.com"
+EMAIL_HOST_PASSWORD="nwefwdxzifjqqiig"
 EMAIL_USE_TLS=True

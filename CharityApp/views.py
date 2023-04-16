@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
 from .emails import *
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
 
@@ -99,7 +100,8 @@ class Varify_User(viewsets.ViewSet):
 class Transaction_Records(viewsets.ModelViewSet):
     queryset = Block_Of_Transactions.objects.all()
     serializer_class = TransactionSerializer
-    # filter_backends = []
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['id', 'user_id']
     http_method_names = ['get', 'post']
 
     def create(self, request):
@@ -117,8 +119,9 @@ class Transaction_Records(viewsets.ModelViewSet):
             Transaction_obj.Adhar_number = serializer.validated_data.get('Adhar_number')
             Transaction_obj.PAN_Number = serializer.validated_data.get('Pan_Number')
             Transaction_obj.message = serializer.validated_data.get('message')
-            # Transaction_obj.hash = Block_Of_Transactions().create_hash(serializer.validated_data.get('donor'))
-            # Transaction_obj.prev_hash = Block_Of_Transactions().get_prev_hash(serializer.validated_data.get('donor'))
+            Transaction_obj.save()
+            Transaction_obj.hash = Block_Of_Transactions().create_hash(Transaction_obj)
+            Transaction_obj.prev_hash = Block_Of_Transactions().get_prev_hash(Transaction_obj)
             Transaction_obj.save()
             return Response(self.serializer_class(Transaction_obj).data)
         return Response({"message":"Something went wrong"})
